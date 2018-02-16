@@ -1,0 +1,64 @@
+[-------------------------------------code-------------------------------------]
+   0x8048697 <store_number+103>:	mov    DWORD PTR [esp],0x8048ae6
+=> 0x804869e <store_number+110>:	call   0x80484c0 <puts@plt>
+[------------------------------------stack-------------------------------------]
+0000| 0xffffd4f0 --> 0x8048ae6 (" *** ERROR! ***")
+
+
+
+
+=> 0x80489d5 <main+690>:	mov    esi,DWORD PTR [esp+0x1cc
+   0x80489dc <main+697>:	xor    esi,DWORD PTR gs:0x14
+   0x80489e3 <main+704>:	je     0x80489ea <main+711>
+   0x80489e5 <main+706>:	call   0x80484b0 <__stack_chk_fail@plt>
+
+
+0x08048697 ???
+
+-------------
+
+edi : 0x8048d60 = 33631751
+
+-158*4
+0x8048ae8 = 33631593    
++1350
+0x804a000 = 33632943
+
+0x8048ad0 --> 0x20007525 ('%u')  index =  
+---------
+
+EIP: 0x80486ce
+
+
+
+[----------------------------------registers-----------------------------------]
+EAX: 0xffffd568 --> 0x42 ('B')
+EBX: 0xffffd564 --> 0x0
+ECX: 0x1
+EDX: 0x41 ('A')
+ESI: 0xffffd6fd ("AAAAAAAAAA")
+EDI: 0x8048d60 --> 0x61657200 ('')
+EBP: 0xffffd538 --> 0xffffd728 --> 0x0
+ESP: 0xffffd510 --> 0x8048add (" Index: ")
+EIP: 0x80486ce (<store_number+158>:	mov    DWORD PTR [eax],edx)
+EFLAGS: 0x282 (carry parity adjust zero SIGN trap INTERRUPT direction overflow)
+[-------------------------------------code-------------------------------------]
+   0x80486c5 <store_number+149>:	shl    eax,0x2
+   0x80486c8 <store_number+152>:	add    eax,DWORD PTR [ebp+0x8]
+   0x80486cb <store_number+155>:	mov    edx,DWORD PTR [ebp-0x10]
+=> 0x80486ce <store_number+158>:	mov    DWORD PTR [eax],edx
+   0x80486d0 <store_number+160>:	mov    eax,0x0
+   0x80486d5 <store_number+165>:	leave
+   0x80486d6 <store_number+166>:	ret
+   0x80486d7 <read_number>:	push   ebp
+[------------------------------------stack-------------------------------------]
+0000| 0xffffd510 --> 0x8048add (" Index: ")
+0004| 0xffffd514 --> 0x8048d60 --> 0x61657200 ('')
+0008| 0xffffd518 --> 0xffffd728 --> 0x0
+0012| 0xffffd51c --> 0xf7e2b6c0 (0xf7e2b6c0)
+0016| 0xffffd520 --> 0xf7fcfa20 --> 0xfbad2a84
+0020| 0xffffd524 --> 0x8048d4b ("Input command: ")
+0024| 0xffffd528 --> 0x41 ('A')
+0028| 0xffffd52c --> 0x1
+[------------------------------------------------------------------------------]
+Legend: code, data, rodata, value
