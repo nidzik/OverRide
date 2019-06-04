@@ -1,0 +1,49 @@
+In <main> function, we can see that the password value is passed over to <test> function alongside with 322424845.
+
+$ (gdb) disas main
+...
+0x080488b6 <+92>:	lea    edx,[esp+0x1c]
+0x080488ba <+96>:	mov    DWORD PTR [esp+0x4],edx
+0x080488be <+100>:	mov    DWORD PTR [esp],eax
+0x080488c1 <+103>:	call   0x8048530 <__isoc99_scanf@plt>
+
+0x080488c6 <+108>:	mov    eax,DWORD PTR [esp+0x1c]
+0x080488ca <+112>:	mov    DWORD PTR [esp+0x4],0x1337d00d
+0x080488d2 <+120>:	mov    DWORD PTR [esp],eax
+0x080488d5 <+123>:	call   0x8048747 <test>
+...
+
+In <test> if arg2 - arg1 <= 21 the jump(%eax) at 0x08048773 is executed.
+With a few tries we find that passing 322424827 over to test spawns us a shell ...
+
+$ (gdb) disas test
+...
+0x0804874d <+6>:	mov    eax,DWORD PTR [ebp+0x8]
+0x08048750 <+9>:	mov    edx,DWORD PTR [ebp+0xc]
+0x08048753 <+12>:	mov    ecx,edx
+0x08048755 <+14>:	sub    ecx,eax
+0x08048757 <+16>:	mov    eax,ecx
+0x08048759 <+18>:	mov    DWORD PTR [ebp-0xc],eax
+0x0804875c <+21>:	cmp    DWORD PTR [ebp-0xc],0x15
+0x08048760 <+25>:	ja     0x804884a <test+259>
+0x08048766 <+31>:	mov    eax,DWORD PTR [ebp-0xc]
+0x08048769 <+34>:	shl    eax,0x2
+0x0804876c <+37>:	add    eax,0x80489f0
+0x08048771 <+42>:	mov    eax,DWORD PTR [eax]
+0x08048773 <+44>:	jmp    eax
+...
+
+level03@OverRide:~$ ./level03
+***********************************
+*		level03		**
+***********************************
+Password:322424827
+$ cat ../level04/.pass
+cat: ../level04/.pass: Permission denied
+$ pwd
+/home/users/level03
+$ id
+uid=1003(level03) gid=1003(level03) euid=1004(level04) egid=100(users) groups=1004(level04),100(users),1003(level03)
+$ cd /home/users/level04
+$ cat .pass
+kgv3tkEb9h2mLkRsPkXRfc2mHbjMxQzvb2FrgKkf

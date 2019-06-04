@@ -1,37 +1,63 @@
-decrypt(char *str)
+#include <stdio.h>
+#include <time.h>
+#include <stdlib.h>
+#include <string.h>
+
+int		decrypt(int n)
 {
-char s[];  //sub    esp,0x40
+	char	s[] = "Q}|u`sfg~sf{}|a3";
+	int		i;
+	int		l;
 
-   				//mov    eax,gs:0x14
-check stack canary   		//mov    DWORD PTR [ebp-0xc],eax
-canary = 0; // if stack ok 	//xor    eax,eax
+	l = strlen(s);
+	while (i < l) {
+		s[i] ^= n;
+		i++;
+	}
 
-int a1 = 0x757c7d51;  		//mov    DWORD PTR [ebp-0x1d],0x757c7d51
-int a2 = 0x67667360; 		..
-int a3 = 0x7b66737e; 		..
-int a4 = 0x33617c7d; 		// mov    DWORD PTR [ebp-0x11],0x33617c7d
+	if (strcmp(str, "Congratulations!") == 0) {
+		system("/bin/sh");
+	} else {
+		puts("\nInvalid Password");
+	}
+	return (0);
+}
 
-char c = 0; 			//mov    BYTE PTR [ebp-0xd],0x0 ?? 
-				push   eax
-				xor    eax,eax
+void		test(int a, int b)
+{
+	int		n;
 
-if (0 == 0)  
+	n = b - a;
+	switch (n) {
+		case 1: decrypt(n); break;
+		case 2: decrypt(n); break;
+		case 3: decrypt(n); break;
+		case 4: decrypt(n); break;
+		case 5: decrypt(n); break;
+		case 6: decrypt(n); break;
+		case 7: decrypt(n); break;
+		case 8: decrypt(n); break;
+		case 9: decrypt(n); break;
+		case 16: decrypt(n); break;
+		case 17: decrypt(n); break;
+		case 18: decrypt(n); break;
+		case 19: decrypt(n); break;
+		case 20: decrypt(n); break;
+		case 21: decrypt(n); break;
+		default: decrypt(rand()); break;
+	}
+}
 
-	int *a5 = &a1;   		//lea    eax,[ebp-0x1d]
+int		main(int argc, char **argv)
+{
+	int		n;
 
-	size_t c = (size_t)-1;		 mov    DWORD PTR [ebp-0x2c],0xffffffff
-	int ii = 0;
-	while (ii > c)
-		a1[ii++]  = '\0';	a1 = 0x00000000
-					// (ii = 0)
-ii == !i;				// ii = 1
-i = i - 1;				// ii = 0  
-int j = i;				// j = 0 
-int k = 0;
-
-if (j > k)
-	(jump back)
-
-
-
+	srand(time(NULL));
+	puts('***********************************');
+	puts("*\t\tlevel03\t\t**");
+	puts('***********************************');
+	printf("Password:");
+	scanf("%d", &n);
+	test(n, 0x1337d00d); // 0x1337d00d = 322424845
+	return (0);
 }

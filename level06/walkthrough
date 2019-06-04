@@ -1,0 +1,51 @@
+gdb r < <(cat <(python -c 'print "abcdef"') <(echo 55))
+.---------------------------.
+| !! TAMPERING DETECTED !!  |
+'---------------------------'
+
+oops break @ptrace :
+   0x080487b5 <+109>:	call   0x80485f0 <ptrace@plt>
+-> 0x080487ba <+114>:	cmp    eax,0xffffffff
+
+
+gdb-peda$ r < <(cat <(python -c 'print "abcdef"') <(echo 55))
+Breakpoint 1, 0x080487ba in auth ()
+gdb-peda$ set $eax=1
+gdb-peda$ c
+[Inferior 1 (process 1949) exited with code 01]
+
+
+main : if test return 0 we got a shell
+
+0x08048941 <+200>:	call   0x8048748 <auth>
+   0x08048946 <+205>:	test   eax,eax
+   0x08048948 <+207>:	jne    0x8048969 <main+240>
+   0x0804894a <+209>:	mov    DWORD PTR [esp],0x8048b52
+   0x08048951 <+216>:	call   0x8048590 <puts@plt>
+   0x08048956 <+221>:	mov    DWORD PTR [esp],0x8048b61
+   0x0804895d <+228>:	call   0x80485a0 <system@plt>
+   0x08048962 <+233>:	mov    eax,0x0
+
+auth() :
+   0x0804885e <+278>:	cmp    eax,DWORD PTR [ebp-0xc]
+   0x08048861 <+281>:	jl     0x804880f <auth+199>
+   0x08048863 <+283>:	mov    eax,DWORD PTR [ebp+0xc]
+   0x08048866 <+286>:	cmp    eax,DWORD PTR [ebp-0x10]  <--- break here
+   0x08048869 <+289>:	je     0x8048872 <auth+298>
+   0x0804886b <+291>:	mov    eax,0x1
+   0x08048870 <+296>:	jmp    0x8048877 <auth+303>
+   0x08048872 <+298>:	mov    eax,0x0      	<-- here is the ret 0
+
+
+
+gdb-peda$ x/x $ebp-0x10
+0xffffd6a8:	0x005f1ae2
+
+$eax = 0x37  *(55)
+
+we need to set $eax to 0x005f1ae2  (6232802)
+gdb-peda$ x/d $ebp-0x10
+0xffffd6a8:	6232802
+
+gives us
+cat <(python -c 'print "abcdef"') <(echo 6232802) - | ./level06

